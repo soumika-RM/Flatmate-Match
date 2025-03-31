@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Gender Preferences</title>
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50%;
+            left: -50%;
+        }
+
+        .logo {
+            z-index: 1;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2.8rem;
+        }
+
+        .progress-container {
+            z-index: 1;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 30%; /* 3/10 pages = 30% */
+            background-color: white;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .page-title {
+            z-index: 1;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .page-description {
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            transition: all 0.5s ease;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+        }
+
+        .checkbox-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.1);
+        }
+
+        .checkbox-item.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .checkbox-square {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-right: 15px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item.selected .checkbox-square {
+            border-color: var(--primary);
+            background-color: var(--primary);
+        }
+
+        .checkbox-item.selected .checkbox-square::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .all-option {
+            border: 2px dashed var(--primary-light);
+        }
+        
+        /* Only apply background color when selected */
+        .checkbox-item.selected.all-option {
+            background-color: var(--secondary);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-previous {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-previous:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+                min-height: 200px;
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .checkbox-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Progress -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="progress-text">Step 3 of 10</div>
+            </div>
+            <h2 class="page-title">Gender Preferences</h2>
+            <p class="page-description">Help us understand who you'd be comfortable sharing a space with.</p>
+        </div>
+
+        <!-- Right Panel with Form -->
+        <div class="right-panel">
+            <div class="form-container">
+                <h1 class="form-title">Who would you like to share a flat with?</h1>
+                <p class="form-subtitle">Select all that apply. Your comfort is our priority.</p>
+
+                <div class="checkbox-container">
+                    <label class="checkbox-item" id="option1">
+                        <input type="checkbox" name="gender" value="men" hidden>
+                        <span class="checkbox-square"></span>
+                        <span class="checkbox-label">Men</span>
+                    </label>
+
+                    <label class="checkbox-item" id="option2">
+                        <input type="checkbox" name="gender" value="women" hidden>
+                        <span class="checkbox-square"></span>
+                        <span class="checkbox-label">Women</span>
+                    </label>
+
+                    <label class="checkbox-item" id="option3">
+                        <input type="checkbox" name="gender" value="non-binary" hidden>
+                        <span class="checkbox-square"></span>
+                        <span class="checkbox-label">Non-binary people</span>
+                    </label>
+
+                    <label class="checkbox-item all-option" id="option4">
+                        <input type="checkbox" name="gender" value="all" hidden>
+                        <span class="checkbox-square"></span>
+                        <span class="checkbox-label">I am open to sharing a room with everyone</span>
+                    </label>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-previous">Previous</button>
+                    <button class="btn btn-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle checkbox selection
+        // Handle checkbox selection
+const checkboxItems = document.querySelectorAll('.checkbox-item');
+const allOption = document.getElementById('option4');
+
+checkboxItems.forEach(item => {
+    item.addEventListener('click', function() {
+        const checkbox = this.querySelector('input[type="checkbox"]');
+        
+        // Toggle selection
+        if (!checkbox.checked) {
+            this.classList.add('selected');
+            checkbox.checked = true;
+        } else {
+            this.classList.remove('selected');
+            checkbox.checked = false;
+        }
+
+        // If "all" option is selected, deselect others
+        if (this.id === 'option4') {
+            checkboxItems.forEach(otherItem => {
+                if (otherItem !== this) {
+                    otherItem.classList.remove('selected');
+                    otherItem.querySelector('input[type="checkbox"]').checked = false;
+                }
+            });
+        } else {
+            // If any specific option is selected, deselect "all" option
+            if (allOption.classList.contains('selected')) {
+                allOption.classList.remove('selected');
+                allOption.querySelector('input[type="checkbox"]').checked = false;
+            }
+        }
+    });
+});
+
+
+        document.querySelector('.btn-next').addEventListener('click', function() {
+            // Check if at least one option is selected
+            const selectedOptions = document.querySelectorAll('input[name="gender"]:checked');
+            
+            if (selectedOptions.length === 0) {
+                alert('Please select at least one preference to continue.');
+                return;
+            }
+            
+            // Navigate to next page
+            window.location.href = 'budget.html';
+        });
+    </script>
+</body>
+</html>

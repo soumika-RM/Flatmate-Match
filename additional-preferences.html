@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Additional Preferences</title>
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50%;
+            left: -50%;
+        }
+
+        .logo {
+            z-index: 1;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2.8rem;
+        }
+
+        .progress-container {
+            z-index: 1;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 100%; /* 10/10 pages = 100% */
+            background-color: white;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .page-title {
+            z-index: 1;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .page-description {
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .radio-container {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-container:hover {
+            border-color: var(--primary-light);
+            background-color: var(--secondary);
+        }
+
+        .radio-container.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .radio-input {
+            display: none;
+        }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray);
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .radio-custom::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: none;
+        }
+
+        .radio-input:checked + .radio-custom::after {
+            display: block;
+        }
+
+        .radio-input:checked + .radio-custom {
+            border-color: var(--primary);
+        }
+
+        .radio-label {
+            font-size: 1.1rem;
+        }
+
+        .pet-icons {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            margin-bottom: 0.8rem;
+        }
+
+        .pet-icon {
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .text-input-container {
+            margin-top: 0.8rem;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(140, 179, 105, 0.2);
+        }
+
+        .text-input:disabled {
+            background-color: #f8f8f8;
+            cursor: not-allowed;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-previous {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-previous:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-finish {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-finish:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.3);
+        }
+
+        /* Celebration effect */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f;
+            position: absolute;
+            top: 0;
+            border-radius: 0;
+            animation: confetti 5s ease-in-out -2s infinite;
+            transform-origin: 0% 0%;
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: rotateZ(15deg) rotateY(0deg) translate(0, 0);
+                opacity: 1;
+            }
+            25% {
+                transform: rotateZ(5deg) rotateY(360deg) translate(-5vw, 20vh);
+            }
+            50% {
+                transform: rotateZ(15deg) rotateY(720deg) translate(5vw, 60vh);
+            }
+            75% {
+                transform: rotateZ(5deg) rotateY(1080deg) translate(-10vw, 80vh);
+            }
+            100% {
+                transform: rotateZ(15deg) rotateY(1440deg) translate(10vw, 110vh);
+                opacity: 0;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+                min-height: 200px;
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .form-container {
+                padding-bottom: 1rem;
+            }
+            
+            .pet-icons {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Progress -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="progress-text">Step 10 of 10</div>
+            </div>
+            <h2 class="page-title">Additional Preferences</h2>
+            <p class="page-description">Just a few more questions to finalize your perfect match.</p>
+        </div>
+
+        <!-- Right Panel with Form -->
+        <div class="right-panel">
+            <div class="form-container">
+                <h1 class="form-title">Final Preferences</h1>
+                <p class="form-subtitle">Let's cover a few more important details to complete your profile.</p>
+
+                <div class="form-group">
+                    <h3 class="question-title">Do you have pets?</h3>
+                    <div class="pet-icons">
+                        <div class="pet-icon">🐶</div>
+                        <div class="pet-icon">🐱</div>
+                        <div class="pet-icon">🐦</div>
+                    </div>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="has-pet" value="yes" class="radio-input" id="pet-yes-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="has-pet" value="no" class="radio-input" id="pet-no-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <div class="text-input-container" id="pet-details-container" style="display: none;">
+                            <input type="text" id="pet-details" class="text-input" placeholder="What pet(s) do you have?">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Are you okay with a roommate who has pets?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="accept-pet" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="accept-pet" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="accept-pet" value="depends" class="radio-input" id="pet-depends-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Depends on the pet</span>
+                        </label>
+                        <div class="text-input-container" id="pet-preference-container" style="display: none;">
+                            <input type="text" id="pet-preference" class="text-input" placeholder="Please specify which pets are acceptable">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Any additional information you'd like to share with potential flatmates?</h3>
+                    <div class="text-input-container">
+                        <textarea id="additional-info" class="text-input" placeholder="Share anything else that might be important (hobbies, interests, specific needs, etc.)" style="min-height: 100px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-previous">Previous</button>
+                    <button class="btn btn-finish">Finish Setup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate form groups sequentially
+        document.addEventListener('DOMContentLoaded', function() {
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                setTimeout(() => {
+                    group.classList.add('animate');
+                }, 150 * (index + 1));
+            });
+        });
+
+        // Toggle selected class for radio buttons
+        const radioContainers = document.querySelectorAll('.radio-container');
+        
+        radioContainers.forEach(container => {
+            const radioInput = container.querySelector('.radio-input');
+            
+            container.addEventListener('click', () => {
+                // Get all radio containers in the same group
+                const name = radioInput.name;
+                const sameGroupContainers = document.querySelectorAll(`.radio-container input[name="${name}"]`)
+                    .forEach(input => input.closest('.radio-container').classList.remove('selected'));
+                
+                // Select the clicked one
+                radioInput.checked = true;
+                container.classList.add('selected');
+                
+                // Handle special case for pet details
+                if (name === 'has-pet') {
+                    const petDetailsContainer = document.getElementById('pet-details-container');
+                    petDetailsContainer.style.display = radioInput.id === 'pet-yes-radio' ? 'block' : 'none';
+                    
+                    if (radioInput.id === 'pet-yes-radio') {
+                        document.getElementById('pet-details').focus();
+                    }
+                }
+                
+                // Handle special case for pet preferences
+                if (name === 'accept-pet') {
+                    const petPreferenceContainer = document.getElementById('pet-preference-container');
+                    petPreferenceContainer.style.display = radioInput.id === 'pet-depends-radio' ? 'block' : 'none';
+                    
+                    if (radioInput.id === 'pet-depends-radio') {
+                        document.getElementById('pet-preference').focus();
+                    }
+                }
+            });
+        });
+
+        // Handle navigation buttons
+        document.querySelector('.btn-previous').addEventListener('click', function() {
+            window.location.href = 'work-routine.html';
+        });
+
+        document.querySelector('.btn-finish').addEventListener('click', function() {
+            // Validation for required fields
+            const requiredFields = [
+                'has-pet',
+                'accept-pet'
+            ];
+            
+            let allFieldsCompleted = true;
+            let missingFields = [];
+            
+            requiredFields.forEach(field => {
+                const selectedOption = document.querySelector(`input[name="${field}"]:checked`);
+                if (!selectedOption) {
+                    allFieldsCompleted = false;
+                    
+                    // Get the question title for this field
+                    const fieldContainer = document.querySelector(`input[name="${field}"]`).closest('.form-group');
+                    const questionTitle = fieldContainer.querySelector('.question-title').textContent;
+                    missingFields.push(questionTitle);
+                }
+            });
+            
+            // Special validation for pet details text input if "Yes" is selected
+            const petYesRadio = document.getElementById('pet-yes-radio');
+            if (petYesRadio && petYesRadio.checked) {
+                const petDetailsInput = document.getElementById('pet-details');
+                if (!petDetailsInput.value.trim()) {
+                    allFieldsCompleted = false;
+                    missingFields.push('Please specify what pets you have');
+                }
+            }
+            
+            // Special validation for pet preference text input if "Depends" is selected
+            const petDependsRadio = document.getElementById('pet-depends-radio');
+            if (petDependsRadio && petDependsRadio.checked) {
+                const petPreferenceInput = document.getElementById('pet-preference');
+                if (!petPreferenceInput.value.trim()) {
+                    allFieldsCompleted = false;
+                    missingFields.push('Please specify which pets are acceptable');
+                }
+            }
+            
+            if (!allFieldsCompleted) {
+                alert('Please answer all questions before proceeding:\n\n' + missingFields.join('\n'));
+                return;
+            }
+            
+            // Create celebration effect
+            createConfetti();
+            
+            // Show success message
+            alert('Congratulations! Your profile is now complete. You can now start exploring potential flatmates.');
+            
+            // Navigate to dashboard or home page
+            setTimeout(() => {
+                window.location.href = 'profiles2.html';
+            }, 1500);
+        });
+        
+        // Function to create confetti celebration effect
+        function createConfetti() {
+            const colors = ['#8CB369', '#5F8D4E', '#A4C3A2', '#EAF4DE', '#F8F9FA'];
+            const confettiCount = 100;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.width = (Math.random() * 10) + 5 + 'px';
+                confetti.style.height = (Math.random() * 10) + 5 + 'px';
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.animationDuration = (Math.random() * 5) + 5 + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 10000);
+            }
+        }
+    </script>
+</body>
+</html>

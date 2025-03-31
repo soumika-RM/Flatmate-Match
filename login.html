@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Flatmate Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Link to your existing CSS file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">
+                <i class="fas fa-home logo-icon"></i>
+                <span>RoomMate</span>
+            </div>
+            <div class="tagline">Find the perfect flatmate for your living space</div>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-search feature-icon"></i>
+                    <span>Find compatible roommates</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-house-user feature-icon"></i>
+                    <span>Share your flat or find one</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-comments feature-icon"></i>
+                    <span>Connect and communicate easily</span>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="form-container login-form fade-in">
+                <h2 class="form-title">Welcome Back</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="remember" class="checkbox">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <div class="form-footer">
+                    <p class="form-text">Don't have an account? <a href="#" class="form-link" id="registerLink">Register</a></p>
+                    <p><a href="#" class="form-link">Forgot Password?</a></p>
+                </div>
+                <div class="social-login">
+                    <button class="social-btn">
+                        <i class="fab fa-google social-icon"></i>
+                        <span>Continue with Google</span>
+                    </button>
+                    <button class="social-btn">
+                        <i class="fab fa-facebook-f social-icon"></i>
+                        <span>Continue with Facebook</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the login form
+        const loginForm = document.getElementById('loginForm');
+        
+        // Add event listener for form submission
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            // Get form input values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Validate email and password
+            let isValid = true;
+            
+            // Simple email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address");
+                isValid = false;
+            }
+            
+            // Simple password validation (at least 6 characters)
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters");
+                isValid = false;
+            }
+            
+            // If all validations pass, redirect to purpose.html
+            if (isValid) {
+                // In a real application, you would validate credentials with a server
+                // For this example, we'll just redirect
+                window.location.href = 'purpose.html';
+            }
+        });
+        
+        // Register link functionality (if needed)
+        const registerLink = document.getElementById('registerLink');
+        if (registerLink) {
+            registerLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.location.href = 'register.html'; // Or handle showing the register form
+            });
+        }
+    </script>
+</body>
+</html>

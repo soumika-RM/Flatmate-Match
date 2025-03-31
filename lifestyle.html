@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Lifestyle & Daily Habits</title>
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50%;
+            left: -50%;
+        }
+
+        .logo {
+            z-index: 1;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2.8rem;
+        }
+
+        .progress-container {
+            z-index: 1;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 60%; /* 6/10 pages = 60% */
+            background-color: white;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .page-title {
+            z-index: 1;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .page-description {
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .radio-container {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-container:hover {
+            border-color: var(--primary-light);
+            background-color: var(--secondary);
+        }
+
+        .radio-container.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .radio-input {
+            display: none;
+        }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray);
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .radio-custom::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: none;
+        }
+
+        .radio-input:checked + .radio-custom::after {
+            display: block;
+        }
+
+        .radio-input:checked + .radio-custom {
+            border-color: var(--primary);
+        }
+
+        .radio-label {
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-previous {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-previous:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.3);
+        }
+
+        /* Input field styles */
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(140, 179, 105, 0.2);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+                min-height: 200px;
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .form-container {
+                padding-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Progress -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="progress-text">Step 6 of 10</div>
+            </div>
+            <h2 class="page-title">Lifestyle & Daily Habits</h2>
+            <p class="page-description">Let us know about your lifestyle to find a compatible flatmate.</p>
+        </div>
+
+        <!-- Right Panel with Form -->
+        <div class="right-panel">
+            <div class="form-container">
+                <h1 class="form-title">Your Lifestyle Preferences</h1>
+                <p class="form-subtitle">Tell us about your daily habits and preferences.</p>
+
+                <!-- Age input field (newly added) -->
+                <div class="form-group">
+                    <h3 class="question-title">How old are you?</h3>
+                    <input type="number" name="age" id="age" min="18" max="100" placeholder="Your age (18+)" class="input-field">
+                    <p id="age-error" class="error-message">Please enter a valid age (must be 18 or older).</p>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">What are your sleeping habits?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="sleeping-habits" value="early-bird" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Early Bird (Sleep early, wake up early)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="sleeping-habits" value="night-owl" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Night Owl (Stay up late, wake up late)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="sleeping-habits" value="flexible" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Flexible</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Do you smoke?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="smoke" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="smoke" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="smoke" value="occasionally" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Occasionally</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Are you okay with a roommate who smokes?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-smoke" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-smoke" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-smoke" value="occasionally" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Occasionally is fine</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Do you drink alcohol?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="drink" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="drink" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="drink" value="occasionally" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Occasionally</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Are you okay with a roommate who drinks?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-drink" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-drink" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-drink" value="occasionally" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Occasionally is fine</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">How often do you cook at home?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="cooking" value="rarely" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Rarely (Order food mostly)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="cooking" value="sometimes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Sometimes (Cook occasionally)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="cooking" value="regularly" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Regularly (Cook most of my meals at home)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">What type of food do you prefer?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="food-preference" value="vegetarian" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Vegetarian</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="food-preference" value="non-vegetarian" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Non-Vegetarian</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="food-preference" value="vegan" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Vegan</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="food-preference" value="eggetarian" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Eggetarian</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="food-preference" value="no-preference" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No preference</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Are you okay with a roommate who eats non-veg?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-nonveg" value="yes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="roommate-nonveg" value="no" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-previous">Previous</button>
+                    <button class="btn btn-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle selected class for radio buttons
+        const radioContainers = document.querySelectorAll('.radio-container');
+        
+        radioContainers.forEach(container => {
+            const radioInput = container.querySelector('.radio-input');
+            
+            container.addEventListener('click', () => {
+                // Get all radio containers in the same group
+                const name = radioInput.name;
+                const sameGroupContainers = document.querySelectorAll(`.radio-container input[name="${name}"]`)
+                    .forEach(input => input.closest('.radio-container').classList.remove('selected'));
+                
+                // Select the clicked one
+                radioInput.checked = true;
+                container.classList.add('selected');
+            });
+        });
+
+        // Age input validation
+        const ageInput = document.getElementById('age');
+        const ageError = document.getElementById('age-error');
+        
+        ageInput.addEventListener('input', function() {
+            const age = parseInt(this.value);
+            if (isNaN(age) || age < 18 || age > 100) {
+                ageError.style.display = 'block';
+                this.setCustomValidity('Please enter a valid age (18-100)');
+            } else {
+                ageError.style.display = 'none';
+                this.setCustomValidity('');
+            }
+        });
+
+        // Handle navigation buttons
+        document.querySelector('.btn-previous').addEventListener('click', function() {
+            window.location.href = 'location.html';
+        });
+
+        document.querySelector('.btn-next').addEventListener('click', function() {
+            // Validate age field
+            const age = parseInt(document.getElementById('age').value);
+            if (isNaN(age) || age < 18 || age > 100) {
+                document.getElementById('age-error').style.display = 'block';
+                document.getElementById('age').focus();
+                return;
+            }
+            
+            // Validation for required fields
+            const requiredFields = [
+                'sleeping-habits',
+                'smoke',
+                'roommate-smoke',
+                'drink',
+                'roommate-drink',
+                'cooking',
+                'food-preference',
+                'roommate-nonveg'
+            ];
+            
+            let allFieldsCompleted = true;
+            
+            requiredFields.forEach(field => {
+                const selectedOption = document.querySelector(`input[name="${field}"]:checked`);
+                if (!selectedOption) {
+                    allFieldsCompleted = false;
+                }
+            });
+            
+            if (!allFieldsCompleted) {
+                alert('Please complete all fields to continue.');
+                return;
+            }
+            
+            // Navigate to next page
+            window.location.href = 'cleanliness.html';
+        });
+        
+        // Apply fade-in animation to each form group
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            group.style.opacity = '0';
+            setTimeout(() => {
+                group.style.opacity = '1';
+                group.style.transition = 'opacity 0.3s ease';
+            }, 100 * (index + 1));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Location Preferences</title>
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50%;
+            left: -50%;
+        }
+
+        .logo {
+            z-index: 1;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2.8rem;
+        }
+
+        .progress-container {
+            z-index: 1;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 50%; /* 5/10 pages = 50% */
+            background-color: white;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .page-title {
+            z-index: 1;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .page-description {
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            transition: all 0.5s ease;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .select-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-select {
+            appearance: none;
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-select:hover, .custom-select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.1);
+            outline: none;
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--primary);
+            pointer-events: none;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:hover, .text-input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.1);
+            outline: none;
+        }
+
+        .helper-text {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-previous {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-previous:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+                min-height: 200px;
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .custom-select, .text-input {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Progress -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="progress-text">Step 5 of 10</div>
+            </div>
+            <h2 class="page-title">Location Preferences</h2>
+            <p class="page-description">Tell us where you'd like to live to find the perfect match.</p>
+        </div>
+
+        <!-- Right Panel with Form -->
+        <div class="right-panel">
+            <div class="form-container">
+                <h1 class="form-title">Your Ideal Location</h1>
+                <p class="form-subtitle">Help us find matches in your preferred areas.</p>
+
+                <div class="form-group">
+                    <h3 class="question-title">Which city are you looking for accommodation in?</h3>
+                    
+                    <div class="select-container">
+                        <select class="custom-select" id="city-select" name="city">
+                            <option value="" disabled selected>Select a city</option>
+                            <option value="delhi">Delhi</option>
+                            <option value="mumbai">Mumbai</option>
+                            <option value="bangalore">Bangalore</option>
+                            <option value="hyderabad">Hyderabad</option>
+                            <option value="chennai">Chennai</option>
+                            <option value="kolkata">Kolkata</option>
+                            <option value="pune">Pune</option>
+                            <option value="ahmedabad">Ahmedabad</option>
+                            <option value="jaipur">Jaipur</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="select-arrow"></div>
+                    </div>
+
+                    <!-- Additional field for "Other" city option -->
+                    <div id="other-city-container" style="display: none; margin-top: -1rem; margin-bottom: 1.5rem;">
+                        <input type="text" class="text-input" id="other-city" placeholder="Please specify your city">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Preferred areas?</h3>
+                    
+                    <input type="text" class="text-input" id="preferred-areas" placeholder="E.g., Koramangala, Indiranagar">
+                    <p class="helper-text">Separate multiple areas with commas</p>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-previous">Previous</button>
+                    <button class="btn btn-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show or hide the "Other city" field based on selection
+        document.getElementById('city-select').addEventListener('change', function() {
+            const otherCityContainer = document.getElementById('other-city-container');
+            if (this.value === 'other') {
+                otherCityContainer.style.display = 'block';
+            } else {
+                otherCityContainer.style.display = 'none';
+            }
+        });
+
+        // Handle navigation buttons
+        document.querySelector('.btn-previous').addEventListener('click', function() {
+            window.location.href = 'budget.html';
+        });
+
+        document.querySelector('.btn-next').addEventListener('click', function() {
+            // Validate city selection
+            const citySelect = document.getElementById('city-select');
+            const otherCity = document.getElementById('other-city');
+            
+            if (citySelect.value === '') {
+                alert('Please select a city to continue.');
+                return;
+            }
+            
+            if (citySelect.value === 'other' && otherCity.value.trim() === '') {
+                alert('Please specify your city to continue.');
+                return;
+            }
+            
+            // Preferred areas are optional, so no validation needed
+            
+            // Navigate to next page
+            window.location.href = 'lifestyle.html';
+        });
+    </script>
+</body>
+</html>

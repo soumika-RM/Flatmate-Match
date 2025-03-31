@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Work & Routine</title>
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -50%;
+            left: -50%;
+        }
+
+        .logo {
+            z-index: 1;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2.8rem;
+        }
+
+        .progress-container {
+            z-index: 1;
+            width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 90%; /* 9/10 pages = 90% */
+            background-color: white;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .page-title {
+            z-index: 1;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .page-description {
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all 0.5s ease;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .form-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .radio-container {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-container:hover {
+            border-color: var(--primary-light);
+            background-color: var(--secondary);
+        }
+
+        .radio-container.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .radio-input {
+            display: none;
+        }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray);
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .radio-custom::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: none;
+        }
+
+        .radio-input:checked + .radio-custom::after {
+            display: block;
+        }
+
+        .radio-input:checked + .radio-custom {
+            border-color: var(--primary);
+        }
+
+        .radio-label {
+            font-size: 1.1rem;
+        }
+
+        .work-icons {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-icon {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .text-input-container {
+            margin-top: 0.8rem;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(140, 179, 105, 0.2);
+        }
+
+        .text-input:disabled {
+            background-color: #f8f8f8;
+            cursor: not-allowed;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-previous {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-previous:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 179, 105, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95%;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+                min-height: 200px;
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .form-container {
+                padding-bottom: 1rem;
+            }
+            
+            .work-icons {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Progress -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="progress-text">Step 9 of 10</div>
+            </div>
+            <h2 class="page-title">Work & Routine</h2>
+            <p class="page-description">Tell us about your professional life and daily schedule to find a compatible flatmate.</p>
+        </div>
+
+        <!-- Right Panel with Form -->
+        <div class="right-panel">
+            <div class="form-container">
+                <h1 class="form-title">Your Work Life</h1>
+                <p class="form-subtitle">Share your professional details for better flatmate compatibility.</p>
+
+                <div class="form-group">
+                    <h3 class="question-title">What is your profession?</h3>
+                    <div class="work-icons">
+                        <div class="work-icon">👩‍🎓</div>
+                        <div class="work-icon">👨‍💼</div>
+                        <div class="work-icon">👩‍💻</div>
+                    </div>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="profession" value="student" class="radio-input" id="student-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Student</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="profession" value="working-professional" class="radio-input" id="professional-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Working Professional</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="profession" value="freelancer" class="radio-input" id="freelancer-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Freelancer</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="profession" value="other" class="radio-input" id="other-radio">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Other</span>
+                        </label>
+                        <div class="text-input-container">
+                            <input type="text" id="other-profession" class="text-input" placeholder="Please specify your profession" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">What is your daily schedule like?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="schedule" value="work-from-home" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Work from home (mostly at home)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="schedule" value="work-from-office" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Work from office (away during the day, back at night)</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="schedule" value="flexible" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Flexible schedule</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3 class="question-title">Do you need a quiet environment for work/study?</h3>
+                    <div class="option-group">
+                        <label class="radio-container">
+                            <input type="radio" name="quiet-environment" value="always" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Yes, always</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="quiet-environment" value="sometimes" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Sometimes, depends on the task</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="quiet-environment" value="not-necessary" class="radio-input">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">Not necessary, I can focus with noise</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-previous">Previous</button>
+                    <button class="btn btn-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate form groups sequentially
+        document.addEventListener('DOMContentLoaded', function() {
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                setTimeout(() => {
+                    group.classList.add('animate');
+                }, 150 * (index + 1));
+            });
+        });
+
+        // Toggle selected class for radio buttons
+        const radioContainers = document.querySelectorAll('.radio-container');
+        
+        radioContainers.forEach(container => {
+            const radioInput = container.querySelector('.radio-input');
+            
+            container.addEventListener('click', () => {
+                // Get all radio containers in the same group
+                const name = radioInput.name;
+                const sameGroupContainers = document.querySelectorAll(`.radio-container input[name="${name}"]`)
+                    .forEach(input => input.closest('.radio-container').classList.remove('selected'));
+                
+                // Select the clicked one
+                radioInput.checked = true;
+                container.classList.add('selected');
+                
+                // Handle special case for "Other" profession option
+                if (name === 'profession') {
+                    const otherProfessionInput = document.getElementById('other-profession');
+                    otherProfessionInput.disabled = radioInput.id !== 'other-radio';
+                    
+                    if (radioInput.id === 'other-radio') {
+                        otherProfessionInput.focus();
+                    }
+                }
+            });
+        });
+
+        // Handle navigation buttons
+        document.querySelector('.btn-previous').addEventListener('click', function() {
+            window.location.href = 'social.html';
+        });
+
+        document.querySelector('.btn-next').addEventListener('click', function() {
+            // Validation for required fields
+            const requiredFields = [
+                'profession',
+                'schedule', 
+                'quiet-environment'
+            ];
+            
+            let allFieldsCompleted = true;
+            let missingFields = [];
+            
+            requiredFields.forEach(field => {
+                const selectedOption = document.querySelector(`input[name="${field}"]:checked`);
+                if (!selectedOption) {
+                    allFieldsCompleted = false;
+                    
+                    // Get the question title for this field
+                    const fieldContainer = document.querySelector(`input[name="${field}"]`).closest('.form-group');
+                    const questionTitle = fieldContainer.querySelector('.question-title').textContent;
+                    missingFields.push(questionTitle);
+                }
+            });
+            
+            // Special validation for "Other" profession text input
+            const otherRadio = document.getElementById('other-radio');
+            if (otherRadio && otherRadio.checked) {
+                const otherProfessionInput = document.getElementById('other-profession');
+                if (!otherProfessionInput.value.trim()) {
+                    allFieldsCompleted = false;
+                    missingFields.push('Please specify your profession');
+                }
+            }
+            
+            if (!allFieldsCompleted) {
+                alert('Please answer all questions before proceeding:\n\n' + missingFields.join('\n'));
+                return;
+            }
+            
+            // Navigate to next page
+            window.location.href = 'additional-preferences.html';
+        });
+    </script>
+</body>
+</html>

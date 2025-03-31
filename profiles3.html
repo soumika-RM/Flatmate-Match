@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Find Your Perfect Roommate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+        flex-direction: column;
+        width: 90%;
+        max-width: 1200px;
+        border-radius: 24px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        position: relative;
+        margin: 20px auto; /* Add some margin for spacing */
+        min-height: 80vh;
+
+            
+        }
+
+        /* Header styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: white;
+            z-index: 10;
+        }
+
+        .menu-icon, .chat-icon {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .menu-icon:hover, .chat-icon:hover {
+            background-color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .logo-small {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon-small {
+            margin-right: 8px;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+            position: relative;
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 20px; /* Add some spacing at the top */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--light); /* Fallback background */
+        }
+        
+        .profile-image-wrapper {
+            width: 200px; /* Smaller size for the circular image */
+            height: 200px; /* Smaller size for the circular image */
+            border-radius: 50%; /* Circular design */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid var(--primary); /* Optional: Add a border */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Optional: Add shadow */
+        }
+        
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+        }
+        
+        .profile-name-overlay {
+            margin-top: 10px; /* Space between image and name */
+            color: var(--dark); /* Use a dark color for better readability */
+            font-size: 1.5rem; /* Smaller font size */
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .profile-age-overlay {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .profile-info {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .profile-bio {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-tag {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--secondary);
+            color: var(--primary-dark);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag-icon {
+            margin-right: 8px;
+        }
+
+        .info-section {
+            margin-top: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            color: var(--primary);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            margin-top: 3px;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dislike-btn {
+            background-color: white;
+            color: #FF5757;
+            border: 2px solid #FF5757;
+        }
+
+        .dislike-btn:hover {
+            background-color: #FF5757;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .like-btn {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .like-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .undo-btn {
+            background-color: white;
+            color: var(--gray);
+            border: 2px solid var(--gray);
+            font-size: 1.2rem;
+        }
+
+        .undo-btn:hover {
+            background-color: var(--gray);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Side menu */
+        .side-menu {
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh; /* Full viewport height */
+            background-color: white;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: left 0.3s ease;
+            padding: 2rem;
+        }
+        
+        .side-menu.active {
+            left: 0; /* Slide in when active */
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-dark);
+        }
+
+        .menu-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-user-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary);
+        }
+
+        .menu-user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-profile-btn {
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-link:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes swipeRight {
+            from {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(150%) rotate(30deg);
+                opacity: 0;
+            }
+        }
+
+        .swipe-right {
+            animation: swipeRight 0.7s ease forwards;
+        }
+
+        @keyframes swipeLeft {
+            from {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-150%) rotate(-30deg);
+                opacity: 0;
+            }
+        }
+
+        .swipe-left {
+            animation: swipeLeft 0.7s ease forwards;
+        }
+
+        /* Match animation */
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+            14% {
+                transform: scale(1.3);
+            }
+            28% {
+                transform: scale(1);
+            }
+            42% {
+                transform: scale(1.3);
+            }
+            70% {
+                transform: scale(1);
+            }
+        }
+
+        .heart-beat {
+            animation: heartBeat 1.5s ease;
+        }
+
+        .match-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 101;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .match-popup.active {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .match-header {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .match-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .match-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .match-img-left {
+            position: relative;
+            left: 15px;
+            z-index: 1;
+        }
+
+        .match-img-right {
+            position: relative;
+            right: 15px;
+            z-index: 1;
+        }
+
+        .match-heart {
+            position: absolute;
+            font-size: 2.5rem;
+            color: var(--primary);
+            z-index: 2;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        .match-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .match-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .send-message-btn {
+            background-color: var(--primary);
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .send-message-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn {
+            background-color: transparent;
+            color: var(--gray);
+            border: 1px solid var(--gray);
+        }
+
+        .continue-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 95%;
+                height: 90vh;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Status indicator for swipe feedback */
+        .swipe-status {
+            position: absolute;
+            top: 20%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            border: 5px solid;
+            transform: rotate(-20deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 50;
+        }
+        
+        .like-status {
+            right: 3rem;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .dislike-status {
+            left: 3rem;
+            color: #FF5757;
+            border-color: #FF5757;
+        }
+        
+        .status-visible {
+            opacity: 1;
+        }
+
+        .flat-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 15px;
+    display: none; /* Hidden by default, will be shown conditionally */
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h3 {
+    margin: 0;
+    margin-left: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Flat image slider */
+.flat-image-slider {
+    position: relative;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 200px;
+}
+
+.flat-image-container {
+    display: flex;
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.flat-image {
+    width: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+    height: 100%;
+}
+
+.slider-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+}
+
+.slider-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.slider-btn:hover {
+    background-color: white;
+}
+
+/* Flat details */
+.flat-details {
+    padding: 10px;
+}
+
+.flat-info-row {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.flat-info-item {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    margin-right: 10px;
+}
+
+.flat-address {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.flat-description {
+    margin-bottom: 15px;
+    line-height: 1.5;
+    color: #444;
+}
+
+.flat-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.amenity-tag {
+    background-color: #f2f7ff;
+    color: #4a6da7;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.amenity-tag .tag-icon {
+    margin-right: 6px;
+    font-size: 0.8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .flat-info-row {
+        flex-direction: column;
+    }
+    
+    .flat-info-item {
+        margin-bottom: 10px;
+    }
+    
+    .flat-image-slider {
+        height: 160px;
+    }
+    
+    .amenity-tag {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-icon" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo-small">
+                <i class="fas fa-home-user logo-icon-small"></i>
+                FlatmateMatch
+            </div>
+            <div class="chat-icon" id="chatBtn">
+                <i class="fas fa-comments"></i>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content" id="profileCard">
+            <!-- Swipe status indicators -->
+            <div class="swipe-status like-status" id="likeStatus">Yes</div>
+            <div class="swipe-status dislike-status" id="dislikeStatus">Nope</div>
+            <div class="flat-section" id="flatSection">
+                <div class="section-header">
+                    <i class="fas fa-home"></i>
+                    <h3>Flat Details</h3>
+                </div>
+                <div class="flat-image-slider">
+                    <div class="flat-image-container" id="flatImageContainer"></div>
+                    <div class="slider-controls">
+                        <button class="slider-btn" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                        <button class="slider-btn" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="flat-details">
+                    <div class="flat-info-row">
+                        <div class="flat-info-item">
+                            <i class="fas fa-home"></i>
+                            <div class="info-content">
+                                <div class="info-label">Type</div>
+                                <div class="info-value" id="flatType"></div>
+                            </div>
+                        </div>
+                        <div class="flat-info-item">
+                            <i class="fas fa-rupee-sign"></i>
+                            <div class="info-content">
+                                <div class="info-label">Rent</div>
+                                <div class="info-value" id="flatRent"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flat-address">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="info-content">
+                            <div class="info-label">Address</div>
+                            <div class="info-value" id="flatAddress"></div>
+                        </div>
+                    </div>
+                    <div class="flat-description" id="flatDescription"></div>
+                    <div class="flat-amenities" id="flatAmenities"></div>
+                </div>
+            </div>
+            <div class="profile-image-container">
+                <div class="profile-image-wrapper">
+                    <img src="images/rohit.jpg" alt="Profile Picture" class="profile-image" id="profileImage">
+                </div>
+                <div class="profile-name-overlay">
+                    <span id="profileName">Rohit Sharma</span> <span class="profile-age-overlay" id="profileAge">28</span>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="profile-bio" id="profileBio">
+                    Software engineer working at a startup. Looking for a clean, quiet place near HSR Layout. I'm easy-going and respect personal space. I enjoy reading books and occasional gaming during weekends.
+                </div>
+                
+                <div class="profile-tags" id="profileTags">
+                    <div class="profile-tag">
+                        <i class="fas fa-briefcase tag-icon"></i>Working Professional
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-smoking-ban tag-icon"></i>Non-smoker
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-wine-glass-alt tag-icon"></i>Occasional Drinker
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-utensils tag-icon"></i>Non-vegetarian
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="fas fa-home section-icon"></i>Accommodation Details
+                    </div>
+                    
+                    <div class="info-grid" id="accommodationDetails">
+                        <div class="info-item">
+                            <i class="fas fa-rupee-sign info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Budget Range</div>
+                                <div class="info-value" id="budgetRange">₹15,000 - ₹20,000</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Preferred Location</div>
+                                <div class="info-value" id="preferredLocation">HSR Layout, Koramangala</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-user info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Gender Preference</div>
+                                <div class="info-value" id="genderPreference">Open to all</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-handshake info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Negotiation</div>
+                                <div class="info-value" id="negotiation">Yes, open to discuss</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-clock section-icon"></i>Lifestyle
+                    </div>
+                    
+                    <div class="info-grid" id="lifestyleDetails">
+                        <div class="info-item">
+                            <i class="fas fa-moon info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Sleeping Habits</div>
+                                <div class="info-value" id="sleepingHabits">Early Bird</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-broom info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Cleanliness</div>
+                                <div class="info-value" id="cleanliness">Moderate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-users info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Social Preference</div>
+                                <div class="info-value" id="socialPreference">Ambivert</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-user-friends info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Visitors</div>
+                                <div class="info-value" id="visitors">Only occasionally</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <div class="action-btn undo-btn" id="undoBtn">
+                <i class="fas fa-undo"></i>
+            </div>
+            <div class="action-btn dislike-btn" id="dislikeBtn">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="action-btn like-btn" id="likeBtn">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+
+        <!-- Side menu -->
+        <div class="side-menu" id="sideMenu">
+            <div class="menu-close" id="menuClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="menu-user">
+                <img src="images/aakash.jpeg" alt="Your Profile" class="menu-user-img">
+                <div class="menu-user-name">Aakash Singh</div>
+                <button class="edit-profile-btn">Edit Profile</button>
+            </div>
+            <ul class="menu-items">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-sliders-h menu-icon"></i>
+                        Edit Preferences
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-heart menu-icon"></i>
+                        View Liked Profiles
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-bell menu-icon"></i>
+                        Notifications
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-cog menu-icon"></i>
+                        Account Settings
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-question-circle menu-icon"></i>
+                        Help & Support
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-sign-out-alt menu-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Match popup -->
+        <div class="match-popup" id="matchPopup">
+            <div class="match-header">It's a Match!</div>
+            <div class="match-images">
+                <img src="images/aakash.jpeg" alt="Your Profile" class="match-img match-img-left">
+                <i class="fas fa-heart match-heart"></i>
+                <img src="images/rohit.jpg" alt="Match Profile" class="match-img match-img-right" id="matchProfileImage">
+            </div>
+            <div class="match-text" id="matchText">
+                You and <span id="matchName">Rohit</span> both liked each other. Start a conversation now!
+            </div>
+            <button class="match-btn send-message-btn" id="sendMessageBtn">
+                <i class="fas fa-comment-dots"></i> Send Message
+            </button>
+            <button class="match-btn continue-btn" id="continueBtn">
+                Continue Browsing
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Static profile data
+        // Static profile data (can be replaced with an API call)
+const profiles = [
+{
+    name: "Rohit Sharma",
+    age: 28,
+    image: "/images/rohit.jpg",
+    bio: "Software engineer working at a startup. Looking for a clean, quiet place near HSR Layout. I'm easy-going and respect personal space. I enjoy reading books and occasional gaming during weekends.",
+    tags: [
+        { icon: "fas fa-briefcase", text: "Working Professional" },
+        { icon: "fas fa-smoking-ban", text: "Non-smoker" },
+        { icon: "fas fa-wine-glass-alt", text: "Occasional Drinker" },
+        { icon: "fas fa-utensils", text: "Non-vegetarian" }
+    ],
+    accommodation: {
+        budget: "₹15,000 - ₹20,000",
+        location: "HSR Layout, Koramangala",
+        gender: "Open to all",
+        negotiation: "Yes, open to discuss"
+    },
+    lifestyle: {
+        sleep: "Early Bird",
+        cleanliness: "Moderate",
+        social: "Ambivert",
+        visitors: "Only occasionally"
+    },
+    hasFlat: true,
+    flat: {
+        images: ["/images/flat1.jpg", "/images/flat2.jpg", "/images/flat3.jpg"],
+        type: "3BHK Apartment",
+        rent: "₹30,000 per month",
+        deposit: "₹60,000",
+        availableFrom: "April 1, 2025",
+        address: "Palm Meadows, HSR Layout",
+        amenities: [
+            { icon: "fas fa-wifi", text: "High-speed WiFi" },
+            { icon: "fas fa-dumbbell", text: "Gym" },
+            { icon: "fas fa-car", text: "Parking" },
+            { icon: "fas fa-swimming-pool", text: "Swimming Pool" }
+        ],
+        description: "Modern 3BHK apartment with spacious rooms, large balcony, and plenty of natural light. Located in a gated community with 24/7 security."
+    }
+},
+// Add more profiles here...
+];
+
+// Elements to update
+const profileImage = document.getElementById('profileImage');
+const profileName = document.getElementById('profileName');
+const profileAge = document.getElementById('profileAge');
+const profileBio = document.getElementById('profileBio');
+const profileTags = document.getElementById('profileTags');
+const budgetRange = document.getElementById('budgetRange');
+const preferredLocation = document.getElementById('preferredLocation');
+const genderPreference = document.getElementById('genderPreference');
+const negotiation = document.getElementById('negotiation');
+const sleepingHabits = document.getElementById('sleepingHabits');
+const cleanliness = document.getElementById('cleanliness');
+const socialPreference = document.getElementById('socialPreference');
+const visitors = document.getElementById('visitors');
+const flatSection = document.getElementById('flatSection');
+const flatImageContainer = document.getElementById('flatImageContainer');
+const flatType = document.getElementById('flatType');
+const flatRent = document.getElementById('flatRent');
+const flatAddress = document.getElementById('flatAddress');
+const flatDescription = document.getElementById('flatDescription');
+const flatAmenities = document.getElementById('flatAmenities');
+
+// Current profile index
+let currentProfileIndex = 0;
+let profileHistory = [];
+let likedProfiles = [];
+
+// Load profile data
+function loadProfile(index) {
+if (!profiles[index]) {
+    console.error('Profile not found');
+    return;
+}
+
+const profile = profiles[index];
+
+// Update profile details
+profileImage.src = profile.image;
+profileName.textContent = profile.name;
+profileAge.textContent = profile.age;
+profileBio.textContent = profile.bio;
+
+// Update tags
+profileTags.innerHTML = '';
+profile.tags.forEach(tag => {
+    const tagElement = document.createElement('div');
+    tagElement.className = 'profile-tag';
+    tagElement.innerHTML = `<i class="${tag.icon} tag-icon"></i>${tag.text}`;
+    profileTags.appendChild(tagElement);
+});
+
+// Update accommodation details
+budgetRange.textContent = profile.accommodation.budget;
+preferredLocation.textContent = profile.accommodation.location;
+genderPreference.textContent = profile.accommodation.gender;
+negotiation.textContent = profile.accommodation.negotiation;
+
+// Update lifestyle details
+sleepingHabits.textContent = profile.lifestyle.sleep;
+cleanliness.textContent = profile.lifestyle.cleanliness;
+socialPreference.textContent = profile.lifestyle.social;
+visitors.textContent = profile.lifestyle.visitors;
+
+// Update flat details if available
+if (profile.hasFlat) {
+    flatSection.style.display = 'block';
+    flatType.textContent = profile.flat.type;
+    flatRent.textContent = profile.flat.rent;
+    flatAddress.textContent = profile.flat.address;
+    flatDescription.textContent = profile.flat.description;
+
+    // Update flat images
+    flatImageContainer.innerHTML = '';
+    profile.flat.images.forEach(image => {
+        const img = document.createElement('img');
+        img.src = image;
+        img.className = 'flat-image';
+        flatImageContainer.appendChild(img);
+    });
+
+    // Update amenities
+    flatAmenities.innerHTML = '';
+    profile.flat.amenities.forEach(amenity => {
+        const amenityTag = document.createElement('div');
+        amenityTag.className = 'amenity-tag';
+        amenityTag.innerHTML = `<i class="${amenity.icon} tag-icon"></i>${amenity.text}`;
+        flatAmenities.appendChild(amenityTag);
+    });
+} else {
+    flatSection.style.display = 'none';
+}
+}
+
+// Initialize with first profile
+loadProfile(currentProfileIndex);
+
+// Swipe functionality
+function nextProfile() {
+profileHistory.push(currentProfileIndex);
+currentProfileIndex = (currentProfileIndex + 1) % profiles.length;
+profileCard.classList.remove('swipe-left', 'swipe-right');
+void profileCard.offsetWidth; // Trigger reflow to restart animation
+loadProfile(currentProfileIndex);
+}
+
+// Like functionality
+likeBtn.addEventListener('click', () => {
+likeStatus.classList.add('status-visible');
+setTimeout(() => likeStatus.classList.remove('status-visible'), 800);
+profileCard.classList.add('swipe-right');
+likedProfiles.push(currentProfileIndex);
+saveLikedProfiles(); // Save to localStorage
+setTimeout(() => {
+    const isMatch = Math.random() > 0.5; // 50% chance for demo
+    if (isMatch) showMatch();
+    else nextProfile();
+}, 700);
+});
+
+// Dislike functionality
+dislikeBtn.addEventListener('click', () => {
+dislikeStatus.classList.add('status-visible');
+setTimeout(() => dislikeStatus.classList.remove('status-visible'), 800);
+profileCard.classList.add('swipe-left');
+setTimeout(() => nextProfile(), 700);
+});
+
+// Undo functionality
+undoBtn.addEventListener('click', () => {
+if (profileHistory.length > 0) {
+    const lastProfile = profileHistory.pop();
+    currentProfileIndex = lastProfile;
+    const likedIndex = likedProfiles.indexOf(lastProfile);
+    if (likedIndex > -1) likedProfiles.splice(likedIndex, 1);
+    loadProfile(currentProfileIndex);
+}
+});
+
+// Save liked profiles to localStorage
+function saveLikedProfiles() {
+localStorage.setItem('likedProfiles', JSON.stringify(likedProfiles));
+}
+
+// Load liked profiles from localStorage
+function loadLikedProfiles() {
+const savedProfiles = localStorage.getItem('likedProfiles');
+if (savedProfiles) likedProfiles = JSON.parse(savedProfiles);
+}
+
+// Show match popup
+function showMatch() {
+const matchedProfile = profiles[currentProfileIndex];
+matchProfileImage.src = matchedProfile.image;
+matchName.textContent = matchedProfile.name.split(' ')[0];
+matchText.innerHTML = `You and <span>${matchedProfile.name.split(' ')[0]}</span> both liked each other. Start a conversation now!`;
+matchPopup.classList.add('active');
+overlay.classList.add('active');
+}
+
+// Initialize
+loadLikedProfiles();
+</script>

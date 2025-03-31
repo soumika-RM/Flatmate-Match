@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Find Your Perfect Roommate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8CB369; /* Pistachio green */
+            --primary-light: #A4C3A2;
+            --primary-dark: #5F8D4E; /* Olive green */
+            --secondary: #EAF4DE;
+            --light: #F8F9FA;
+            --dark: #2C3E2E;
+            --gray: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            position: relative;
+        }
+
+        /* Header styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: white;
+            z-index: 10;
+        }
+
+        .menu-icon, .chat-icon {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .menu-icon:hover, .chat-icon:hover {
+            background-color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .logo-small {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon-small {
+            margin-right: 8px;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 100%;
+            height: 45%;
+            overflow: hidden;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.7));
+        }
+
+        .profile-name-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 25px;
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: baseline;
+        }
+
+        .profile-age-overlay {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-left: 10px;
+        }
+
+        .profile-info {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .profile-bio {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-tag {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--secondary);
+            color: var(--primary-dark);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag-icon {
+            margin-right: 8px;
+        }
+
+        .info-section {
+            margin-top: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            color: var(--primary);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            margin-top: 3px;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dislike-btn {
+            background-color: white;
+            color: #FF5757;
+            border: 2px solid #FF5757;
+        }
+
+        .dislike-btn:hover {
+            background-color: #FF5757;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .like-btn {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .like-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .undo-btn {
+            background-color: white;
+            color: var(--gray);
+            border: 2px solid var(--gray);
+            font-size: 1.2rem;
+        }
+
+        .undo-btn:hover {
+            background-color: var(--gray);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Side menu */
+        .side-menu {
+            position: absolute;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: left 0.3s ease;
+            padding: 2rem;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-dark);
+        }
+
+        .menu-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-user-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary);
+        }
+
+        .menu-user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-profile-btn {
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-link:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes swipeRight {
+            from {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(150%) rotate(30deg);
+                opacity: 0;
+            }
+        }
+
+        .swipe-right {
+            animation: swipeRight 0.7s ease forwards;
+        }
+
+        @keyframes swipeLeft {
+            from {
+                transform: translateX(0) rotate(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-150%) rotate(-30deg);
+                opacity: 0;
+            }
+        }
+
+        .swipe-left {
+            animation: swipeLeft 0.7s ease forwards;
+        }
+
+        /* Match animation */
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+            14% {
+                transform: scale(1.3);
+            }
+            28% {
+                transform: scale(1);
+            }
+            42% {
+                transform: scale(1.3);
+            }
+            70% {
+                transform: scale(1);
+            }
+        }
+
+        .heart-beat {
+            animation: heartBeat 1.5s ease;
+        }
+
+        .match-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 101;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .match-popup.active {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .match-header {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .match-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .match-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .match-img-left {
+            position: relative;
+            left: 15px;
+            z-index: 1;
+        }
+
+        .match-img-right {
+            position: relative;
+            right: 15px;
+            z-index: 1;
+        }
+
+        .match-heart {
+            position: absolute;
+            font-size: 2.5rem;
+            color: var(--primary);
+            z-index: 2;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        .match-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .match-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .send-message-btn {
+            background-color: var(--primary);
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .send-message-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn {
+            background-color: transparent;
+            color: var(--gray);
+            border: 1px solid var(--gray);
+        }
+
+        .continue-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 95%;
+                height: 90vh;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-icon" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo-small">
+                <i class="fas fa-home-user logo-icon-small"></i>
+                FlatmateMatch
+            </div>
+            <div class="chat-icon" id="chatBtn">
+                <i class="fas fa-comments"></i>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content" id="profileCard">
+            <div class="profile-image-container">
+                <img src="/api/placeholder/800/500" alt="Profile Picture" class="profile-image">
+                <div class="image-overlay"></div>
+                <div class="profile-name-overlay">
+                    Rohit Sharma <span class="profile-age-overlay">28</span>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="profile-bio">
+                    Software engineer working at a startup. Looking for a clean, quiet place near HSR Layout. I'm easy-going and respect personal space. I enjoy reading books and occasional gaming during weekends.
+                </div>
+                
+                <div class="profile-tags">
+                    <div class="profile-tag">
+                        <i class="fas fa-briefcase tag-icon"></i>Working Professional
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-smoking-ban tag-icon"></i>Non-smoker
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-wine-glass-alt tag-icon"></i>Occasional Drinker
+                    </div>
+                    <div class="profile-tag">
+                        <i class="fas fa-utensils tag-icon"></i>Non-vegetarian
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="fas fa-home section-icon"></i>Accommodation Details
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-rupee-sign info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Budget Range</div>
+                                <div class="info-value">₹15,000 - ₹20,000</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Preferred Location</div>
+                                <div class="info-value">HSR Layout, Koramangala</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-user info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Gender Preference</div>
+                                <div class="info-value">Open to all</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-handshake info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Negotiation</div>
+                                <div class="info-value">Yes, open to discuss</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-clock section-icon"></i>Lifestyle
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-moon info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Sleeping Habits</div>
+                                <div class="info-value">Early Bird</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-broom info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Cleanliness</div>
+                                <div class="info-value">Moderate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-users info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Social Preference</div>
+                                <div class="info-value">Ambivert</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-user-friends info-icon"></i>
+                            <div class="info-content">
+                                <div class="info-label">Visitors</div>
+                                <div class="info-value">Only occasionally</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <div class="action-btn undo-btn" id="undoBtn">
+                <i class="fas fa-undo"></i>
+            </div>
+            <div class="action-btn dislike-btn" id="dislikeBtn">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="action-btn like-btn" id="likeBtn">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+
+        <!-- Side menu -->
+        <div class="side-menu" id="sideMenu">
+            <div class="menu-close" id="menuClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="menu-user">
+                <img src="/api/placeholder/80/80" alt="Your Profile" class="menu-user-img">
+                <div class="menu-user-name">Aakash Singh</div>
+                <button class="edit-profile-btn">Edit Profile</button>
+            </div>
+            <ul class="menu-items">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-sliders-h menu-icon"></i>
+                        Edit Preferences
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-heart menu-icon"></i>
+                        View Liked Profiles
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-bell menu-icon"></i>
+                        Notifications
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-cog menu-icon"></i>
+                        Account Settings
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-question-circle menu-icon"></i>
+                        Help & Support
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-sign-out-alt menu-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Match popup -->
+        <div class="match-popup" id="matchPopup">
+            <div class="match-header">It's a Match!</div>
+            <div class="match-images">
+                <img src="/api/placeholder/120/120" alt="Your Profile" class="match-img match-img-left">
+                <i class="fas fa-heart match-heart"></i>
+                <img src="/api/placeholder/120/120" alt="Match Profile" class="match-img match-img-right">
+            </div>
+            <div class="match-text">
+                You and Rohit both liked each other. Start a conversation now!
+            </div>
+            <button class="match-btn send-message-btn">
+                <i class="fas fa-comment-dots"></i> Send Message
+            </button>
+            <button class="match-btn continue-btn">
+                Continue Browsing
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const menuBtn = document.getElementById('menuBtn');
+        const menuClose = document.getElementById('menuClose');
+        const sideMenu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('overlay');
+        const chatBtn = document.getElementById('chatBtn');
+        const likeBtn = document.getElementById('likeBtn');
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        const profileCard = document.getElementById('profileCard');
+        const matchPopup = document.getElementById('matchPopup');
+
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        menuClose.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            matchPopup.classList.remove('active');
+        });
+
+        // Swipe functionality
+        likeBtn.addEventListener('click', () => {
+            profileCard.classList.add('swipe-right');
+            
+            // Simulate a match (in a real app, this would be conditional based on if the other person liked you)
+            setTimeout(() => {
+                showMatchPopup();
+            }, 800);
+        });
+
+        dislikeBtn.addEventListener('click', () => {
+            profileCard.classList.add('swipe-left');
+            
+            // In a real app, after animation completes, load next profile
+            setTimeout(() => {
+                profileCard.classList.remove('swipe-left');
+                // Here you would load the next profile
+                // For demo, we'll just remove the animation class
+            }, 800);
+        });
+        
+        function showMatchPopup() {
+            matchPopup.classList.add('active');
+            overlay.classList.add('active');
+        }
+        
+        // Match popup buttons
+        document.querySelector('.continue-btn').addEventListener('click', () => {
+            matchPopup.classList.remove('active');
+            overlay.classList.remove('active');
+            profileCard.classList.remove('swipe-right');
+            // Here you would load the next profile
+        });
+        
+        document.querySelector('.send-message-btn').addEventListener('click', () => {
+            // Navigate to chat page
+            alert("Redirecting to chat page...");
+            // In a real app, this would navigate to the chat page
+        });
+    </script>
+</body>
+</html>

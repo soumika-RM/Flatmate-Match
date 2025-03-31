@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlatmateMatch - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Left Panel with Logo and Features -->
+        <div class="left-panel">
+            <div class="logo">
+                <span class="logo-icon">🏠</span> FlatmateMatch
+            </div>
+            <h2 class="tagline">Find Your Perfect Roommate</h2>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Matched based on lifestyle preferences</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Verified profiles for safety</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Chat with your matches</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Find affordable housing options</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel with Sign Up Form -->
+        <div class="right-panel">
+            <div class="form-container register-form" id="registerForm">
+                <h1 class="form-title">Join FlatmateMatch</h1>
+
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" id="registerEmail" class="form-input" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="password" id="registerPassword" class="form-input" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="termsAgree" class="checkbox" required>
+                        <label for="termsAgree">I agree to the <a href="#" class="form-link">Terms of Service</a> and <a href="#" class="form-link">Privacy Policy</a></label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+
+                <div class="form-footer">
+                    <p class="form-text">Already have an account?</p>
+                    <a href="login.html" class="form-link">Login instead</a>
+                </div>
+
+                <div class="social-login">
+                    <p class="form-text">Or sign up with</p>
+                    <button class="social-btn">
+                        <i class="fab fa-google social-icon"></i>
+                        Continue with Google
+                    </button>
+                    <button class="social-btn">
+                        <i class="fab fa-facebook-f social-icon"></i>
+                        Continue with Facebook
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the signup form
+        const signupForm = document.getElementById('signupForm');
+        
+        // Add event listener for form submission
+        signupForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            // Get form input values
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAgree = document.getElementById('termsAgree').checked;
+            
+            // Validate form inputs
+            let isValid = true;
+            
+            // Check if full name is provided
+            if (fullName.trim() === '') {
+                alert("Please enter your full name");
+                isValid = false;
+                return;
+            }
+            
+            // Simple email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address");
+                isValid = false;
+                return;
+            }
+            
+            // Password validation (at least 6 characters)
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters");
+                isValid = false;
+                return;
+            }
+            
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                isValid = false;
+                return;
+            }
+            
+            // Check if terms are agreed
+            if (!termsAgree) {
+                alert("You must agree to the Terms of Service and Privacy Policy");
+                isValid = false;
+                return;
+            }
+            
+            // If all validations pass, redirect to purpose.html
+            if (isValid) {
+                // In a real application, you would send data to a server first
+                // For this example, we'll just redirect
+                window.location.href = 'purpose.html';
+            }
+        });
+        
+        // Optional: Add click event listeners for social login buttons
+        const socialButtons = document.querySelectorAll('.social-btn');
+        socialButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // In a real app, this would trigger OAuth flow
+                // For this example, just redirect to purpose.html
+                window.location.href = 'purpose.html';
+            });
+        });
+    </script>
+</body>
+</html>
